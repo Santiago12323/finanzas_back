@@ -1,0 +1,20 @@
+package com.ingresos.back.domain.enums.account;
+
+public enum BankType {
+    NEQUI,
+    DAVIPLATA,
+    BANCOLOMBIA,
+    BANCO_DE_BOGOTA,
+    BBVA_COLOMBIA,
+    DAVIVIENDA,
+    NUBANK_COLOMBIA,
+    RAPPIPAY,
+    SCOTIABANK_COLPATRIA,
+    BANCO_DE_OCCIDENTE,
+    BANCO_POPULAR,
+    BANCO_LULO,
+    FALABELLA,
+    BANCO_PIBANK,
+    CAJA_SOCIAL,
+    EFECTIVO_CARTERA_FISICA
+}

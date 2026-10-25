@@ -27,7 +27,3 @@ jwt:
   refresh:
     secret: ${JWT_REFRESH_SECRET}
     expiration: ${JWT_REFRESH_EXPIRATION:604800000}
-
-
-google:
-  client-ids: ${GOOGLE_CLIENT_IDS}

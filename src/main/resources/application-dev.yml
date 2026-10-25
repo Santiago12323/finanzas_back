@@ -1,0 +1,28 @@
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  springdoc:
+    api-docs:
+      enabled: true
+    swagger-ui:
+      enabled: true
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/bd
+    username: user
+    password: pass
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+jwt:
+  access:
+    secret: "dev-access-secret-key-2026-9f4a7c2b8e1d6a5f3c0b9e7d4a2f8c6b"
+    expiration: 900000
+
+  refresh:
+    secret: "dev-refresh-secret-key-2026-7b3e9d1f5a8c2b6e4d0f9a7c3e1b5d8f"
+    expiration: 604800000
+google:
+  client-ids: 1061342538096-pp3a6jbvv1frhlrbvmeamisjdfcunfg2.apps.googleusercontent.com

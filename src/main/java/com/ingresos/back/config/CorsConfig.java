@@ -14,7 +14,10 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("https://finanzas-back-0kpi.onrender.com")
+                        .allowedOrigins(
+                                "https://finanzas-back-0kpi.onrender.com",
+                                "http://localhost:8081"
+                        )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);

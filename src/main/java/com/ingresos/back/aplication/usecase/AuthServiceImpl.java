@@ -1,7 +1,9 @@
 package com.ingresos.back.aplication.usecase;
 
+import com.ingresos.back.domain.model.GoogleUserInfo;
 import com.ingresos.back.domain.model.User;
 import com.ingresos.back.domain.port.AuthService;
+import com.ingresos.back.domain.port.GoogleTokenVerifier;
 import com.ingresos.back.domain.port.JwtService;
 import com.ingresos.back.domain.port.PasswordHasher;
 import com.ingresos.back.infrastructure.controller.dto.auth.AuthResponse;
@@ -20,6 +22,9 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private JwtService jwtService;
 
+    @Autowired
+    private GoogleTokenVerifier googleTokenVerifier;
+
     @Override
     public AuthResponse login(
             String email,
@@ -27,6 +32,12 @@ public class AuthServiceImpl implements AuthService {
     ) {
 
         User user = userService.findByEmail(email);
+
+        if (user.getPassword() == null || user.getPassword().isBlank()) {
+            throw new RuntimeException(
+                    "Se necestia contraseña"
+            );
+        }
 
         if (!passwordHasher.matches(
                 password,
@@ -37,19 +48,43 @@ public class AuthServiceImpl implements AuthService {
             );
         }
 
-        String accessToken =
-                jwtService.generateAccessToken(user);
+        return buildAuthResponse(user);
+    }
 
-        String refreshToken =
-                jwtService.generateRefreshToken(user);
+    @Override
+    public AuthResponse loginWithGoogle(
+            String idToken
+    ) {
 
-        return new AuthResponse(
-                user.getId(),
-                accessToken,
-                refreshToken,
-                "Bearer",
-                900
-        );
+        GoogleUserInfo google = googleTokenVerifier.verify(idToken);
+
+        if (!google.isEmailVerified()) {
+            throw new RuntimeException(
+                    "El correo de Google no está verificado"
+            );
+        }
+
+        User user;
+
+        if (userService.existsByEmail(google.getEmail())) {
+            user = userService.findByEmail(google.getEmail());
+
+            if (user.getPassword() != null && !user.getPassword().isBlank()) {
+                throw new RuntimeException(
+                        "El email ya está registrado. Inicia sesión con tu contraseña"
+                );
+            }
+        } else {
+            user = userService.createUser(
+                    new User(
+                            google.getName(),
+                            google.getEmail(),
+                            null
+                    )
+            );
+        }
+
+        return buildAuthResponse(user);
     }
 
     @Override
@@ -118,5 +153,25 @@ public class AuthServiceImpl implements AuthService {
         // generar token de recuperación
         // guardar token
         // enviar correo
+        // (omitir las cuentas de Google, que no tienen contraseña)
+    }
+
+    private AuthResponse buildAuthResponse(
+            User user
+    ) {
+
+        String accessToken =
+                jwtService.generateAccessToken(user);
+
+        String refreshToken =
+                jwtService.generateRefreshToken(user);
+
+        return new AuthResponse(
+                user.getId(),
+                accessToken,
+                refreshToken,
+                "Bearer",
+                900
+        );
     }
 }

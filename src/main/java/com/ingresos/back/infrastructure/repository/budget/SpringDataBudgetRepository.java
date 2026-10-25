@@ -9,4 +9,5 @@ public interface SpringDataBudgetRepository extends JpaRepository<BudgetEntity, 
 
     List<BudgetEntity> findByUserId(String userId);
 
+    boolean existsByCategoryId(String categoryId);
 }

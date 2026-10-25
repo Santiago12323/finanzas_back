@@ -1,6 +1,7 @@
 package com.ingresos.back.infrastructure.entity.suscription;
 
 import com.ingresos.back.domain.enums.account.Currency;
+import com.ingresos.back.domain.enums.subscription.SubscriptionFrequency;
 import com.ingresos.back.infrastructure.entity.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -32,13 +33,30 @@ public class SubscriptionEntity {
     @Column(nullable = false, length = 3)
     private Currency currency;
 
+    @Column(name = "start_date", nullable = false)
+    private LocalDate startDate;
+
+    @Column(name = "end_date")
+    private LocalDate endDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private SubscriptionFrequency frequency;
+
     @Column(name = "next_payment_date", nullable = false)
     private LocalDate nextPaymentDate;
 
     @Column(name = "is_automated", nullable = false)
-    private Boolean automated;
+    private Boolean automated = true;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private UserEntity user;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.nextPaymentDate == null && this.startDate != null) {
+            this.nextPaymentDate = this.startDate;
+        }
+    }
 }

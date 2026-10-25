@@ -6,6 +6,10 @@ import com.ingresos.back.infrastructure.controller.dto.auth.AuthResponse;
 public interface AuthService {
     AuthResponse login(String email, String password);
 
+    AuthResponse loginWithGoogle(
+            String idToken
+    );
+
     AuthResponse refreshToken(
             String refreshToken
     );

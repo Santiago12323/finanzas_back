@@ -1,26 +1,19 @@
 package com.ingresos.back.domain.port;
 
 import com.ingresos.back.domain.model.Budget;
-import com.ingresos.back.domain.model.BudgetExpense;
 
+import java.time.YearMonth;
 import java.util.List;
-import java.util.Optional;
 
 public interface BudgetService {
 
-    Budget createBudget(Budget budget, String userId);
+    Budget createBudget(Budget budget);
 
-    Budget updateBudget(String id,  Budget budget , String userId);
+    Budget findById(String id, YearMonth month);
 
-    Optional<Budget> findById(String id);
+    List<Budget> findByUserId(String userId, Boolean active, YearMonth month);
 
-    List<Budget> findByUserId(String userId);
+    Budget updateBudget(String id, Budget budget);
 
-    List<Budget> findAll();
-
-    void deleteById(String id);
-
-    Budget addExpense(String budgetId, BudgetExpense expense);
-
-    Budget removeExpense(String budgetId, String expenseId);
+    void deleteBudget(String id);
 }
